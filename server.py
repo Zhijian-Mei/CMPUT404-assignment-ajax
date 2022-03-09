@@ -108,7 +108,7 @@ def get_entity(entity):
 def clear():
     '''Clear the world out!'''
     myWorld.clear()
-    return '',200
+    return myWorld.world(),200
 
 if __name__ == "__main__":
     app.run()
