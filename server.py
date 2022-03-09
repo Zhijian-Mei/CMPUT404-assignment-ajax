@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
-# Copyright 2013 Abram Hindle
+# Copyright 2013 Zhijian Mei
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,10 +19,10 @@
 #
 # remember to:
 #     pip install flask
-
+import os
 
 import flask
-from flask import Flask, request
+from flask import Flask, request, redirect, url_for, render_template,send_from_directory
 import json
 app = Flask(__name__)
 app.debug = True
@@ -41,6 +41,7 @@ class World:
         entry = self.space.get(entity,dict())
         entry[key] = value
         self.space[entity] = entry
+
 
     def set(self, entity, data):
         self.space[entity] = data
@@ -74,27 +75,40 @@ def flask_post_json():
 @app.route("/")
 def hello():
     '''Return something coherent here.. perhaps redirect to /static/index.html '''
-    return None
+    return redirect(url_for('index'),code=301)
+
+@app.route("/static/index.html")
+def index():
+    '''Return something coherent here.. perhaps redirect to /static/index.html '''
+    root = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
+    return send_from_directory(root,'index.html')
 
 @app.route("/entity/<entity>", methods=['POST','PUT'])
 def update(entity):
     '''update the entities via this interface'''
-    return None
+    try:
+        data = flask_post_json()
+        for key in data.keys():
+            myWorld.update(entity=entity,key=key,value=data[key])
+        return myWorld.get(entity=entity),200
+    except:
+        return 'update failed',400
 
 @app.route("/world", methods=['POST','GET'])    
 def world():
     '''you should probably return the world here'''
-    return None
+    return myWorld.world(),200
 
 @app.route("/entity/<entity>")    
 def get_entity(entity):
     '''This is the GET version of the entity interface, return a representation of the entity'''
-    return None
+    return myWorld.get(entity=entity),200
 
 @app.route("/clear", methods=['POST','GET'])
 def clear():
     '''Clear the world out!'''
-    return None
+    myWorld.clear()
+    return '',200
 
 if __name__ == "__main__":
     app.run()
