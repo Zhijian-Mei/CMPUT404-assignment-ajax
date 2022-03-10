@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
-# Copyright 2013 Zhijian Mei
+# Copyright 2022 Zhijian Mei
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -90,25 +90,25 @@ def update(entity):
         data = flask_post_json()
         for key in data.keys():
             myWorld.update(entity=entity,key=key,value=data[key])
-        return myWorld.get(entity=entity),200
+        return json.dumps(myWorld.get(entity)),200
     except:
         return 'update failed',400
 
 @app.route("/world", methods=['POST','GET'])    
 def world():
     '''you should probably return the world here'''
-    return myWorld.world(),200
+    return json.dumps(myWorld.world()),200
 
 @app.route("/entity/<entity>")    
 def get_entity(entity):
     '''This is the GET version of the entity interface, return a representation of the entity'''
-    return myWorld.get(entity=entity),200
+    return json.dumps(myWorld.get(entity)),200
 
 @app.route("/clear", methods=['POST','GET'])
 def clear():
     '''Clear the world out!'''
     myWorld.clear()
-    return myWorld.world(),200
+    return json.dumps(myWorld.world()),200
 
 if __name__ == "__main__":
     app.run()
