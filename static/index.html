@@ -49,12 +49,17 @@ function sendJSONXMLHTTPRequest(url, objects, callback) {
             }
         }
     };
+    if (objects !== null){
     //XXX: POST to a URL 
     xhr.open("POST", url, true);
     //XXX: set the mimetype and the accept headers!
+        } else {
+        xhr.open("GET", url, true);
+    }
     xhr.setRequestHeader('Accept', 'application/json');
     xhr.send(JSON.stringify(objects));
     // Remember to use application/json !
+    
 }
 
 
